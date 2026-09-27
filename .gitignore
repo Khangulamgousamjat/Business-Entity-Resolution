@@ -48,6 +48,7 @@ test/
 dataset/
 student_resource/
 submission_package/
+Team Spartan/
 *.tsv
 *.csv
 *.zip

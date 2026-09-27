@@ -1,6 +1,6 @@
 # Business Entity Resolution — Methodology & Architecture Report
 
-**Team Name:** Team EntityResolvers  
+**Team Name:** Team Spartan  
 **Challenge:** Amazon ML Challenge — Business Entity Resolution  
 **Metric:** Macro-averaged $F_{0.5}$ (Precision-Weighted)  
 
