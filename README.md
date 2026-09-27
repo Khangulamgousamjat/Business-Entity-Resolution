@@ -77,36 +77,6 @@ In large-scale commercial platforms, business identity data arrives from multipl
             ├── evaluate.py              # Macro-averaged F_0.5 evaluation metric
             └── pipeline.py              # End-to-end execution runner
 ```
-
----
-
-## 🚀 Quick Start
-
-### 1. Installation
-
-```bash
-git clone https://github.com/Khangulamgousamjat/amazon-ML-challenge.git
-cd amazon-ML-challenge/code/business_entity_resolution
-pip install -r requirements.txt
-```
-
-### 2. Run End-to-End Pipeline
-
-```bash
-python src/pipeline.py \
-  --test-dir ../../test \
-  --output-dir ../../output
-```
-
-### 3. Validate Submission
-
-```bash
-python utils/validate_submission.py \
-  --matching output/matching_results.tsv \
-  --candidate output/candidate_pairs.tsv \
-  --test-dir test/
-```
-
 ---
 
 ## 📊 Evaluation Metric ($F_{0.5}$)
