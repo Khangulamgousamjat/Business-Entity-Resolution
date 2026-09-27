@@ -1,0 +1,36 @@
+{
+  "model_type": "LightGBM GBDT Classifier",
+  "optimal_threshold": 0.50,
+  "validation_macro_f05": 0.2851,
+  "n_train_pairs": 123036,
+  "n_val_pairs": 29992,
+  "feature_names": [
+    "name_ratio",
+    "name_token_sort",
+    "name_token_set",
+    "name_jaro_winkler",
+    "name_token_jaccard",
+    "name_ngram_sim",
+    "name_len_diff",
+    "addr_ratio",
+    "addr_token_sort",
+    "addr_token_jaccard",
+    "addr_ngram_sim",
+    "addr_len_diff",
+    "addr_missing",
+    "num_jaccard",
+    "num_match_count",
+    "num_conflict",
+    "target_is_s3"
+  ],
+  "top_features": {
+    "addr_ngram_sim": 1180,
+    "addr_len_diff": 959,
+    "name_len_diff": 803,
+    "name_jaro_winkler": 777,
+    "addr_token_sort": 706,
+    "name_ratio": 595,
+    "name_token_sort": 588,
+    "addr_token_jaccard": 537
+  }
+}

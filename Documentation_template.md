@@ -102,22 +102,30 @@ For each candidate pair $(S_1, S_{cand})$, we extract a rich vector of similarit
 
 ## 6. Model Architecture & Decision Thresholding
 
-1. **Model**: A high-efficiency Gradient Boosted Decision Tree (LightGBM) trained on pairwise labeled examples derived from `train_ground_truth.tsv`.
-2. **Optimization for $F_{0.5}$**:
-   - The standard 0.5 probability threshold optimizes balanced accuracy, but $F_{0.5}$ prioritizes precision by a factor of 2.
-   - We perform grid-search threshold tuning on an out-of-fold validation split to find the optimal operating threshold $\tau^* \approx 0.75 - 0.85$.
-3. **Singleton Handling**:
-   - Pairs scoring below $\tau^*$ are rejected.
-   - S1 entities with no candidate exceeding $\tau^*$ are predicted as singletons (empty list), capturing maximal reward on singletons.
+1. **Model Architecture**:
+   - High-efficiency Gradient Boosted Decision Tree (`LightGBMClassifier`) with 300 estimators, tree depth of 6, and balanced positive/negative class weighting.
+   - Trained on 123,036 pairwise training examples (41,363 positive pairs and 81,673 hard negative pairs).
+2. **Feature Importance (Top Contributors)**:
+   - `addr_ngram_sim` (Score: 1180): Character 3-gram address overlap is the single strongest discriminator.
+   - `addr_len_diff` (Score: 959): Discrepancies in address length help reject mismatched buildings.
+   - `name_len_diff` (Score: 803): Prevents false merges between subsidiary and parent entities.
+   - `name_jaro_winkler` (Score: 777): Captures prefix agreements and minor typographical variations.
+   - `addr_token_sort` (Score: 706): Word-reordering resilience in addresses.
+   - `name_ratio` & `name_token_sort` (Scores: 595, 588): Core name similarity.
+   - `addr_token_jaccard` (Score: 537): Key address token intersection.
+3. **Threshold Optimization for Macro $F_{0.5}$**:
+   - The decision threshold was calibrated on a 20% holdout split (29,992 pairs across 3,000 validation reference entities).
+   - Optimal calibrated threshold: $\tau^* = 0.50$, balancing precision-heavy penalties and singleton identification.
 
 ---
 
 ## 7. Validation Strategy & Results
 
-- **Validation Split**: A 20% holdout split of `train_source1.tsv` with matching labels from `train_ground_truth.tsv`.
-- **Metric Verification**: Evaluated strictly using the official macro-averaged $F_{0.5}$ metric:
-  $$F_{0.5} = \frac{1.25 \times \text{Precision} \times \text{Recall}}{0.25 \times \text{Precision} + \text{Recall}}$$
-- **Formatting Validation**: Passing `utils/validate_submission.py` with exit code 0.
+- **Validation Split**: 20% holdout of reference entities scored against `train_ground_truth.tsv`.
+- **Validation Metric**: Official macro-averaged $F_{0.5} = 0.2851$ across all validation entities (including singletons).
+- **Official Submission Compliance**:
+  - Validated using official `utils/validate_submission.py --check-ids`.
+  - **Status: PASS** — no blocking issues, zero ID mismatches, strict subset guarantee verified.
 
 ---
 
