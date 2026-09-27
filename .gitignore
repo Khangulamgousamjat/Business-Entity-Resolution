@@ -47,6 +47,7 @@ train/
 test/
 dataset/
 student_resource/
+submission_package/
 *.tsv
 *.csv
 *.zip
