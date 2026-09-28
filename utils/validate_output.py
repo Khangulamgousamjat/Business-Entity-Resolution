@@ -1,42 +1,21 @@
 #!/usr/bin/env python3
 """
-ML Challenge 2026 — Submission Validator
+Business Entity Resolution Output Validator
 
-Run this BEFORE submitting. It checks your output files against every formatting
-rule the scorer enforces, so you can catch a rejection locally instead of burning
-a submission. It reads only your output files and the test source files (to learn
-which S1 entities are required and which S2/S3 IDs exist); it never needs the
-ground truth and never computes your score.
+Validates output TSV files (matching_results.tsv and candidate_pairs.tsv)
+against structural, relational, and format integrity rules:
+1. Valid UTF-8 encoding without BOM, strict tab-separated columns.
+2. Complete coverage of required Source 1 reference entity IDs.
+3. Proper formatting of matched entity lists and singleton representations.
+4. Optional candidate pool subset verification (every predicted match must originate
+   from the candidate pool).
+5. Optional ID-existence cross-check against target source registries.
 
-It validates two files:
-
-* ``matching_results.tsv`` (required) — your final matches, the file scored on the
-  leaderboard.
-* ``candidate_pairs.tsv`` (optional) — the candidate set from your blocking stage.
-  When present, the validator also checks that your final matches are a subset of
-  your candidates and *warns* (never fails) otherwise. When absent it is skipped
-  with a warning; it is still expected in your final submission zip.
-
-Stdlib only, Python 3.8+. Run from the ``student_resource/`` directory::
-
-    python3 utils/validate_submission.py \
+Usage:
+    python utils/validate_output.py \
         --matching output/matching_results.tsv \
         --candidate output/candidate_pairs.tsv \
-        --test-dir dataset/test
-
-Exit code 0 means the files are safe to submit; 1 means fix the listed issues
-(warnings never fail the run).
-
-ID-existence check (off by default). By default the validator does NOT check that
-every matched/candidate ID actually exists in the test set: that check loads all
-Source-2/3 IDs into memory, which on the full ~1.7M-entity test set costs a few GB
-(more when ``candidate_pairs.tsv`` is included). The default run therefore stays fast
-and light and verifies every other rule; it prints a warning noting the check was
-skipped. Pass ``--check-ids`` to turn it on (it reads ``test_source2.tsv`` /
-``test_source3.tsv`` from ``--test-dir``); a missing/garbage matched ID only lowers
-your score rather than being rejected by the scorer, so this check is a diagnostic,
-not a gate. If ``--check-ids`` runs out of memory, drop ``--candidate`` (the candidate
-cross-check is the biggest memory user, and the matching file is the only one scored).
+        --test-dir test
 """
 
 import argparse
@@ -240,8 +219,7 @@ def validate(matching_path, candidate_path, test_dir, check_ids=False):
     )
 
     # candidate_pairs.tsv is optional: if it's absent we skip its checks with a
-    # warning (it's still expected in your final submission zip). A missing
-    # candidate file never fails this run on its own.
+    # warning. A missing candidate file never fails this run on its own.
     candidate = None
     if candidate_path and os.path.isfile(candidate_path):
         candidate = validate_id_list_file(
@@ -251,8 +229,7 @@ def validate(matching_path, candidate_path, test_dir, check_ids=False):
     elif candidate_path:
         warnings.append(
             f"{candidate_path} not found — skipping candidate_pairs.tsv checks. "
-            "It is optional here, but your final submission zip must include "
-            "output/candidate_pairs.tsv."
+            "Output pipeline should generate output/candidate_pairs.tsv."
         )
 
     # Soft check: your final matches should come from your blocking candidates.
@@ -274,7 +251,7 @@ def validate(matching_path, candidate_path, test_dir, check_ids=False):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Validate ML Challenge 2026 submission output files before submitting."
+        description="Validate Business Entity Resolution output files for schema and relational integrity."
     )
     parser.add_argument(
         "--matching",
@@ -292,7 +269,7 @@ def main():
     parser.add_argument(
         "--test-dir",
         "-t",
-        default="dataset/test",
+        default="test",
         help="Folder with test_source1/2/3.tsv (default: %(default)s). "
         "test_source2/3.tsv are only read when --check-ids is given.",
     )
@@ -301,8 +278,7 @@ def main():
         action="store_true",
         help="Also check that every matched/candidate ID exists in the test "
         "Source-2/3 files. Off by default (loads all S2/S3 IDs into memory — a few "
-        "GB on the full test set). A nonexistent ID only lowers your score, so this "
-        "is a diagnostic, not a submission gate.",
+        "GB on the full test set).",
     )
     args = parser.parse_args()
 
@@ -310,7 +286,7 @@ def main():
     # validate() skip (with a warning) if the file isn't there.
     candidate_path = args.candidate or "output/candidate_pairs.tsv"
 
-    print("ML Challenge 2026 — submission validator")
+    print("Business Entity Resolution — Output Validator")
     print(f"  test dir: {args.test_dir}")
     try:
         errors, warnings = validate(
@@ -318,7 +294,7 @@ def main():
         )
     except UnicodeDecodeError:
         print()
-        print("FAIL — 1 issue(s) to fix before submitting:")
+        print("FAIL — 1 issue(s) found:")
         print(
             f"  1. A file is not valid UTF-8 text (most likely {args.matching} or "
             f"{candidate_path}). Re-save it as a plain UTF-8, tab-separated .tsv — "
@@ -329,7 +305,7 @@ def main():
         return 1
     except OSError as exc:
         print()
-        print("FAIL — 1 issue(s) to fix before submitting:")
+        print("FAIL — 1 issue(s) found:")
         print(f"  1. Could not read a file: {exc}.")
         return 1
 
@@ -337,11 +313,11 @@ def main():
     for warning in warnings:
         print(f"WARNING: {warning}")
     if errors:
-        print(f"FAIL — {len(errors)} issue(s) to fix before submitting:")
+        print(f"FAIL — {len(errors)} issue(s) found:")
         for i, error in enumerate(errors, 1):
             print(f"  {i}. {error}")
         return 1
-    print("PASS — no blocking issues found. Safe to submit.")
+    print("PASS — All output and schema integrity checks passed successfully.")
     return 0
 
 

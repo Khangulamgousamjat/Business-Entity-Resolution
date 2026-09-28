@@ -1,26 +1,26 @@
-# Business Entity Resolution Pipeline
+# Business Entity Resolution Module
 
-This folder contains the complete, self-contained, reproducible pipeline for the Amazon ML Challenge: Business Entity Resolution.
+This directory contains the core modular architecture, feature engineering utilities, blocking algorithms, model training routines, and inference pipeline for large-scale **Business Entity Resolution (ER)**.
 
-## Directory Structure
+## Architecture & Directory Structure
 
 ```
 business_entity_resolution/
-├── README.md              # Reproduction instructions
-├── requirements.txt       # Pinned dependencies
+├── README.md              # Module overview and reproduction guide
+├── requirements.txt       # Dependencies
 └── src/
-    ├── __init__.py
-    ├── config.py          # Paths and tunable hyperparameters
-    ├── preprocess.py      # Address & business name normalization
-    ├── blocking.py        # Candidate generation & inverted index
-    ├── features.py        # String distance and similarity features
-    ├── train.py           # Model training and threshold calibration
-    ├── matcher.py         # LightGBM matcher with calibrated threshold
-    ├── evaluate.py        # Official macro F_0.5 evaluation logic
-    ├── pipeline.py        # End-to-end inference runner script
+    ├── __init__.py        # Package initialization
+    ├── config.py          # Global path configurations and tunable hyperparameters
+    ├── preprocess.py      # Address & business name normalization, legal suffix harmonization
+    ├── blocking.py        # Candidate generation & inverted index blocking
+    ├── features.py        # Multi-modal string distance and similarity feature extraction
+    ├── train.py           # Model training and F_0.5 decision threshold calibration
+    ├── matcher.py         # LightGBM matcher with calibrated thresholding
+    ├── evaluate.py        # Macro-averaged F_0.5 evaluation metric implementation
+    ├── pipeline.py        # End-to-end batch execution pipeline
     └── models/
-        ├── lgbm_matcher.joblib # Trained LightGBM GBDT model
-        └── metadata.json       # Optimal threshold and feature importances
+        ├── lgbm_matcher.joblib # Serialized LightGBM GBDT model
+        └── metadata.json       # Optimal decision threshold and feature importance weights
 ```
 
 ## Setup & Installation
@@ -36,10 +36,10 @@ business_entity_resolution/
    pip install -r requirements.txt
    ```
 
-## Reproducing Results
+## Running the Pipeline
 
-### 1. (Optional) Retrain the Matching Model
-The repository already includes the pre-trained LightGBM model weights and threshold under `src/models/`. If you wish to retrain from scratch:
+### 1. (Optional) Model Training & Threshold Calibration
+To retrain the matching model from scratch on reference entity pairs:
 ```bash
 python src/train.py \
   --train-dir ../../train \
@@ -48,8 +48,8 @@ python src/train.py \
   --val-ratio 0.2
 ```
 
-### 2. Run End-to-End Inference Pipeline
-Run the full candidate blocking and matching pipeline to generate both required submission TSV files:
+### 2. End-to-End Inference Execution
+Run the full candidate blocking and matching pipeline across test entities:
 ```bash
 python src/pipeline.py \
   --test-dir ../../test \
@@ -57,14 +57,14 @@ python src/pipeline.py \
   --model-dir src/models
 ```
 
-This generates:
+Generated outputs:
 - `output/candidate_pairs.tsv`: All candidates generated during the blocking stage.
-- `output/matching_results.tsv`: Final precision-calibrated predicted matches.
+- `output/matching_results.tsv`: Final precision-calibrated predicted entity matches.
 
-### 3. Validate Submission
-Run the official validator script to verify strict format compliance:
+### 3. Output Schema & Integrity Validation
+Verify format compliance, relational constraints, and singleton representations:
 ```bash
-python ../../utils/validate_submission.py \
+python ../../utils/validate_output.py \
   --matching ../../output/matching_results.tsv \
   --candidate ../../output/candidate_pairs.tsv \
   --test-dir ../../test \

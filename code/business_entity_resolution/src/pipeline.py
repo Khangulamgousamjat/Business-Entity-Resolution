@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-End-to-End Execution Pipeline for Amazon ML Challenge: Business Entity Resolution.
+End-to-End Execution Pipeline for Business Entity Resolution.
 
 Key Architectural Highlights:
 1. Country-Partitioned Ingestion:
@@ -10,7 +10,7 @@ Key Architectural Highlights:
    Extracts high-IDF name and address token anchors to generate high-recall candidate pairs.
 3. Machine-Learned Matching:
    Uses the trained LightGBM GBDT model with precision-tuned thresholding for F_0.5 optimization.
-4. Strict Submission Compliance:
+4. Strict Output & Schema Compliance:
    Produces output/candidate_pairs.tsv and output/matching_results.tsv,
    guaranteeing 1-to-1 entity coverage, proper singletons, and subset constraints.
 """
@@ -84,7 +84,7 @@ def run_pipeline(
     countries_to_run: List[str] = None
 ):
     print("=" * 75, flush=True)
-    print("AMAZON ML CHALLENGE: END-TO-END ENTITY RESOLUTION PIPELINE", flush=True)
+    print("BUSINESS ENTITY RESOLUTION: END-TO-END EXECUTION PIPELINE", flush=True)
     print("=" * 75, flush=True)
     print(f"[*] Test Directory:   {test_dir}", flush=True)
     print(f"[*] Output Directory: {output_dir}", flush=True)

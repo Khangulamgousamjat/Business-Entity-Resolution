@@ -94,7 +94,7 @@ def load_source_records(
 
 def train_model(train_dir: str, output_dir: str, n_samples: int = 25000, val_ratio: float = 0.2):
     print("=" * 70)
-    print("AMAZON ML CHALLENGE: DETAILED ENTITY RESOLUTION MODEL TRAINING")
+    print("BUSINESS ENTITY RESOLUTION: MODEL TRAINING & CALIBRATION")
     print("=" * 70)
     print(f"[*] Training Directory: {train_dir}")
     print(f"[*] Output Model Dir:   {output_dir}")

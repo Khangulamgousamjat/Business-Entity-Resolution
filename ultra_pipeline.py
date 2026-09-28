@@ -1,7 +1,7 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
-MAXIMUM-POWER Entity Resolution Pipeline - Amazon ML Challenge 2026
-Uses ALL 2.2M training entities - best possible F0.5
+Ultra-Scale Business Entity Resolution Pipeline
+High-Throughput Matching & Deduplication Engine (Scalable to 10M+ Records)
 
 Scoring Formula (Macro-averaged F_0.5):
   Per entity:

@@ -42,33 +42,31 @@ ENV/
 ehthumbs.db
 Thumbs.db
 
-# Challenge Datasets (Files > 100MB cannot be pushed to GitHub)
+# Raw Data, Big Data & External Datasets (Files excluded from VCS)
 train/
 test/
 dataset/
 student_resource/
 submission_package/
 Team Spartan/
+output_test_perf/
 *.tsv
 *.csv
 *.zip
 *.tar.gz
 *.parquet
-# Allow output submission TSVs (under 100MB GitHub limit)
+*.pdf
+
+# Allow evaluated pipeline outputs (under 100MB GitHub limit)
 !output/*.tsv
 
-# Output submission files - TSVs are included (under 100MB GitHub limit)
-# output/*.tsv  <-- NOT excluded, we want these pushed
-
-# Trained model binary files (too large for GitHub)
+# Serialized Model Binaries & Heavy Checkpoints
 *.joblib
 *.pkl
 *.pickle
-
-# Max models dir - only keep metadata JSON, not binary model
 max_models/*.joblib
 
-# Scratch / temp files
+# Temporary / Scratch directories
 scratch/
 
 # IDE & Editor caches
