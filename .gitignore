@@ -59,6 +59,17 @@ Team Spartan/
 output/*.tsv
 !output/.gitkeep
 
+# Trained model binary files (too large for GitHub)
+*.joblib
+*.pkl
+*.pickle
+
+# Max models dir - only keep metadata JSON, not binary model
+max_models/*.joblib
+
+# Scratch / temp files
+scratch/
+
 # IDE & Editor caches
 .idea/
 .vscode/
