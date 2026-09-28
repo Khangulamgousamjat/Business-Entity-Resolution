@@ -54,10 +54,11 @@ Team Spartan/
 *.zip
 *.tar.gz
 *.parquet
+# Allow output submission TSVs (under 100MB GitHub limit)
+!output/*.tsv
 
-# Output submission files (large TSV outputs)
-output/*.tsv
-!output/.gitkeep
+# Output submission files - TSVs are included (under 100MB GitHub limit)
+# output/*.tsv  <-- NOT excluded, we want these pushed
 
 # Trained model binary files (too large for GitHub)
 *.joblib
